@@ -37,6 +37,7 @@ func NewJobManager(db *gorm.DB, rabbitMQ *queue.RabbitMQ, jobReturnChannel chan 
 }
 
 func (j *JobManager) Start(ch *amqp.Channel) {
+
 	videoService := NewVideoService()
 	videoService.VideoRepository = repositories.VideoRepositoryDb{Db: j.Db}
 
@@ -48,11 +49,11 @@ func (j *JobManager) Start(ch *amqp.Channel) {
 	concurrency, err := strconv.Atoi(os.Getenv("CONCURRENCY_WORKERS"))
 
 	if err != nil {
-		log.Fatalf("error loading var: CONCURRENCY_WORKERS")
+		log.Fatalf("error loading var: CONCURRENCY_WORKERS.")
 	}
 
-	for qtdProccesses := 0; qtdProccesses < concurrency; qtdProccesses++ {
-		go JobWorker(j.MessageChannel, j.JobReturnChannel, jobService, j.Domain, qtdProccesses)
+	for qtdProcesses := 0; qtdProcesses < concurrency; qtdProcesses++ {
+		go JobWorker(j.MessageChannel, j.JobReturnChannel, jobService, j.Domain, qtdProcesses)
 	}
 
 	for jobResult := range j.JobReturnChannel {

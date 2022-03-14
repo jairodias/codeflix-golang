@@ -21,18 +21,20 @@ func NewVideoRepository(db *gorm.DB) *VideoRepositoryDb {
 	return &VideoRepositoryDb{Db: db}
 }
 
-func (repository VideoRepositoryDb) Insert(video *domain.Video) (*domain.Video, error) {
+func (repo VideoRepositoryDb) Insert(video *domain.Video) (*domain.Video, error) {
+
 	if video.ID == "" {
 		video.ID = uuid.NewV4().String()
 	}
 
-	err := repository.Db.Create(video).Error
+	err := repo.Db.Create(video).Error
 
 	if err != nil {
 		return nil, err
 	}
 
 	return video, nil
+
 }
 
 func (repository VideoRepositoryDb) Find(id string) (*domain.Video, error) {
